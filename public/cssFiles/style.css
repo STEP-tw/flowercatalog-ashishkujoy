@@ -1,0 +1,27 @@
+#abeliophyllumInfo{
+  float:left;
+  width:50%;
+}
+
+#abeliophyllumDiv{
+  float:left;
+  width:50%;
+}
+
+#abeliophyllumImg{
+  width:70%;  
+}
+
+#ageratumDiv{
+  float:left;
+  width:50%;
+}
+
+#ageratumImg{
+  width:600px;
+  height:400px;
+}
+
+#flowerName{
+  color: orange;
+}

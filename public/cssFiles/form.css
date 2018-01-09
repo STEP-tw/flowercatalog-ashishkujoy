@@ -1,0 +1,27 @@
+#heading{
+  font-size: 30px;
+  text-align: right;
+  margin-right: 200px;
+}
+
+#formArea{
+  float: left;
+  width:40%;
+}
+
+#commentArea{
+  float: left;
+  width:100%;
+}
+
+table{
+  border:"1px";
+
+}
+
+th{
+  font-size: 20px;
+}
+table,td,th{
+  border-collapse: collapse;
+}

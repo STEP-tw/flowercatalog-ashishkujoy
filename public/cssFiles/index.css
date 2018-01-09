@@ -1,0 +1,19 @@
+#flowerImg{
+  float:left;
+  width:70%;
+}
+
+#freshoriginsImg{
+  width:70%;
+  height:100%;
+  margin-left: 80px;
+}
+
+#pageLinks{
+  float:left;
+  width: 30%;
+}
+
+#animatedPot{
+  visibility: visible;
+}
