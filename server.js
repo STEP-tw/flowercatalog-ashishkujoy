@@ -69,14 +69,14 @@ const toHtmlTable = function(commentRecord) {
   return `<p>${commentRecord.date} ${commentRecord.name} ${commentRecord.comment}</p>`;
 }
 
-const registerUser = function(req,res) {
-  if(isUserAlreadyLogedIn(req)){
-    res.redirect('/guestBook');
-    return;
-  }
-  registeredUsers.push(req.body.username);
-  res.redirect('/guestBook');
-}
+// const registerUser = function(req,res) {
+//   if(isUserAlreadyLogedIn(req)){
+//     res.redirect('/guestBook');
+//     return;
+//   }
+//   registeredUsers.push(req.body.username);
+//   res.redirect('/guestBook');
+// }
 
 const respondLoginFailed = function(res) {
   res.setHeader('Set-Cookie','logInFailed=true');
@@ -141,7 +141,9 @@ app.get('/',(req,res)=>{
 app.get('/comments',(req,res)=>{
   lib.processCommentLoadingReq(session,commentHandler,req,res)
 });
-app.post('/register',registerUser);
+app.post('/register',(req,res)=>{
+  lib.registerUser(registeredUsers,req,res)
+});
 app.post('/login',processLoginRequest);
 app.get('/logout',processLogoutRequest);
 app.post('/submitForm',storeComments);
