@@ -61,7 +61,6 @@ const displayComments = function() {
     showUserName(serverResponse.username);
   }
   let commentsDiv = document.getElementById('freshComments');
-  console.log(comments);
   commentsDiv.innerHTML = comments;
 }
 

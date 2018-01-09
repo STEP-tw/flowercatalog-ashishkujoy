@@ -4,12 +4,12 @@ const WebApp = require('./webapp');
 const fs = require('fs');
 const CommentHandler = require('./serverUtility/commentHandler.js');
 const PORT = 5000;
+const lib = require('./handlers.js');
 
 let registeredUsers = ['joy','arvind'];
 let session = {};
 let commentHandler = new CommentHandler('./data/comments.json');
 commentHandler.loadComments();
-
 
 /*============================================================================*/
 const logger = function(req,res) {
@@ -61,25 +61,22 @@ const processFileRequest = function(req,res) {
   })
 }
 
-
 const tableData = function(data) {
   return `<td>${data}</td>`;
 }
 
 const toHtmlTable = function(commentRecord) {
-  // let date = tableData(object.date);
-  // let name = tableData(object.name);
-  // let comment = tableData(object.comment);
   return `<p>${commentRecord.date} ${commentRecord.name} ${commentRecord.comment}</p>`;
 }
 
-
 const registerUser = function(req,res) {
+  if(isUserAlreadyLogedIn(req)){
+    res.redirect('/guestBook');
+    return;
+  }
   registeredUsers.push(req.body.username);
-  console.log(registeredUsers);
   res.redirect('/guestBook');
 }
-
 
 const respondLoginFailed = function(res) {
   res.setHeader('Set-Cookie','logInFailed=true');
@@ -91,8 +88,16 @@ const responseWithGuestBook = function(res) {
   res.redirect('/guestBook');
 }
 
+const isUserAlreadyLogedIn = function(req) {
+  return req.sessionid != undefined;
+}
+
 const processLoginRequest = function(req,res) {
   let username = req.body.username;
+  if(isUserAlreadyLogedIn(req)){
+    res.redirect('/guestBook');
+    return;
+  }
   if(!registeredUsers.includes(username)) return respondLoginFailed(res);
   let sessionid = new Date().getTime();
   session[sessionid] = username;
@@ -100,16 +105,8 @@ const processLoginRequest = function(req,res) {
   responseWithGuestBook(res);
 }
 
-
-// const handleGuestBookReq = function(req,res) {
-//   let user = session[req.cookies.sessionid];
-//   console.log(user);
-//   if(!user) return res.redirect('/login.html');
-// }
-
 const isUserNotLoggedIn = function(req,session) {
   let sessionid = req.cookies.sessionid
-  console.log(session[sessionid]);
   return session[sessionid]==undefined;
 }
 
@@ -133,19 +130,6 @@ const getLogedUserName = function(session,sessionid) {
   return session[sessionid];
 }
 
-const processCommentLoadingReq = function(req,res) {
-  debugger;
-  let serverResponse = {};
-  if(isUserNotLoggedIn(req,session)){
-    serverResponse.notLogedIn = true;
-  }else{
-    serverResponse.username = getLogedUserName(session,req.cookies.sessionid);
-  }
-  serverResponse.comments= commentHandler.map(toHtmlTable).join('<br/>');
-  console.log(serverResponse);
-  res.write(JSON.stringify(serverResponse));
-  res.end();
-}
 /*============================================================================*/
 
 let app = WebApp.create();
@@ -154,7 +138,9 @@ app.usePostProcess(processFileRequest);
 app.get('/',(req,res)=>{
   res.redirect('/index.html');
 })
-app.get('/comments',processCommentLoadingReq);
+app.get('/comments',(req,res)=>{
+  lib.processCommentLoadingReq(session,commentHandler,req,res)
+});
 app.post('/register',registerUser);
 app.post('/login',processLoginRequest);
 app.get('/logout',processLogoutRequest);
