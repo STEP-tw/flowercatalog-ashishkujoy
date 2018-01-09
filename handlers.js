@@ -68,3 +68,14 @@ const processLogoutRequest = function(req,res) {
   res.redirect('/login.html')
 }
 exports.processLogoutRequest = processLogoutRequest;
+
+const storeComments = function(commentHandler,session,req,res) {
+  if(isUserNotLoggedIn(req,session)){
+    respondWithNotFound(res);
+    return;
+  }
+  commentHandler.storeComment(req.body);
+  res.statusCode=200;
+  res.end();
+}
+exports.storeComments = storeComments;

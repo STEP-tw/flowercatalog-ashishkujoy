@@ -88,21 +88,15 @@ const isUserNotLoggedIn = function(req,session) {
   return session[sessionid]==undefined;
 }
 
-// const processLogoutRequest = function(req,res) {
-//   let time = new Date().toUTCString();
-//   res.setHeader('Set-Cookie',[`logInFailed=false; Expires=${time}`,`sessionid=0; Expires=${time}`]);
-//   res.redirect('/login.html')
+// const storeComments = function(req,res) {
+//   if(isUserNotLoggedIn(req,session)){
+//     respondWithNotFound(res);
+//     return;
+//   }
+//   commentHandler.storeComment(req.body);
+//   res.statusCode=200;
+//   res.end();
 // }
-
-const storeComments = function(req,res) {
-  if(isUserNotLoggedIn(req,session)){
-    respondWithNotFound(res);
-    return;
-  }
-  commentHandler.storeComment(req.body);
-  res.statusCode=200;
-  res.end();
-}
 
 const getLogedUserName = function(session,sessionid) {
   return session[sessionid];
@@ -126,7 +120,9 @@ app.post('/login',(req,res)=>{
   lib.processLoginRequest(registeredUsers,session,req,res)
 });
 app.get('/logout',lib.processLogoutRequest);
-app.post('/submitForm',storeComments);
+app.post('/submitForm',(req,res)=>{
+  lib.storeComments(commentHandler,session,req,res);
+});
 
 let server = http.createServer(app);
 server.on('error',e=>console.error('**error**',e.message));
