@@ -69,15 +69,6 @@ const toHtmlTable = function(commentRecord) {
   return `<p>${commentRecord.date} ${commentRecord.name} ${commentRecord.comment}</p>`;
 }
 
-// const registerUser = function(req,res) {
-//   if(isUserAlreadyLogedIn(req)){
-//     res.redirect('/guestBook');
-//     return;
-//   }
-//   registeredUsers.push(req.body.username);
-//   res.redirect('/guestBook');
-// }
-
 const respondLoginFailed = function(res) {
   res.setHeader('Set-Cookie','logInFailed=true');
   res.write('login failed');
@@ -92,18 +83,18 @@ const isUserAlreadyLogedIn = function(req) {
   return req.sessionid != undefined;
 }
 
-const processLoginRequest = function(req,res) {
-  let username = req.body.username;
-  if(isUserAlreadyLogedIn(req)){
-    res.redirect('/guestBook');
-    return;
-  }
-  if(!registeredUsers.includes(username)) return respondLoginFailed(res);
-  let sessionid = new Date().getTime();
-  session[sessionid] = username;
-  res.setHeader('Set-Cookie',`sessionid=${sessionid}`);
-  responseWithGuestBook(res);
-}
+// const processLoginRequest = function(req,res) {
+//   let username = req.body.username;
+//   if(isUserAlreadyLogedIn(req)){
+//     res.redirect('/guestBook');
+//     return;
+//   }
+//   if(!registeredUsers.includes(username)) return respondLoginFailed(res);
+//   let sessionid = new Date().getTime();
+//   session[sessionid] = username;
+//   res.setHeader('Set-Cookie',`sessionid=${sessionid}`);
+//   responseWithGuestBook(res);
+// }
 
 const isUserNotLoggedIn = function(req,session) {
   let sessionid = req.cookies.sessionid
@@ -144,7 +135,9 @@ app.get('/comments',(req,res)=>{
 app.post('/register',(req,res)=>{
   lib.registerUser(registeredUsers,req,res)
 });
-app.post('/login',processLoginRequest);
+app.post('/login',(req,res)=>{
+  lib.processLoginRequest(registeredUsers,session,req,res)
+});
 app.get('/logout',processLogoutRequest);
 app.post('/submitForm',storeComments);
 

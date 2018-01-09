@@ -15,6 +15,16 @@ const isUserAlreadyLogedIn = function(req) {
   return req.sessionid != undefined;
 }
 
+const respondLoginFailed = function(res) {
+  res.setHeader('Set-Cookie','logInFailed=true');
+  res.write('login failed');
+  res.end();
+}
+
+const responseWithGuestBook = function(res) {
+  res.redirect('/guestBook');
+}
+
 const processCommentLoadingReq = function(session,commentHandler,req,res) {
   let serverResponse = {};
   if(isUserNotLoggedIn(req,session)){
@@ -37,3 +47,17 @@ const registerUser = function(registeredUsers,req,res) {
   res.redirect('/guestBook');
 }
 exports.registerUser=registerUser;
+
+const processLoginRequest = function(registeredUsers,session,req,res) {
+  let username = req.body.username;
+  if(isUserAlreadyLogedIn(req)){
+    res.redirect('/guestBook');
+    return;
+  }
+  if(!registeredUsers.includes(username)) return respondLoginFailed(res);
+  let sessionid = new Date().getTime();
+  session[sessionid] = username;
+  res.setHeader('Set-Cookie',`sessionid=${sessionid}`);
+  responseWithGuestBook(res);
+}
+exports.processLoginRequest = processLoginRequest
