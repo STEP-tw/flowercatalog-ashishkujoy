@@ -51,15 +51,15 @@ const respondWithNotFound = function(res) {
     res.end();
 }
 
-const processFileRequest = function(req,res) {
-  if(res.finished) return;
-  let filePath = './public'+req.url;
-  let contentType = getContentType(filePath);
-  req.fs.readFile(filePath,function(error,file){
-    if(error) return respondWithNotFound(res);
-    deliverFile(file,contentType,res);
-  })
-}
+// const processFileRequest = function(req,res) {
+//   if(res.finished) return;
+//   let filePath = './public'+req.url;
+//   let contentType = getContentType(filePath);
+//   req.fs.readFile(filePath,function(error,file){
+//     if(error) return respondWithNotFound(res);
+//     deliverFile(file,contentType,res);
+//   })
+// }
 
 const tableData = function(data) {
   return `<td>${data}</td>`;
@@ -88,16 +88,6 @@ const isUserNotLoggedIn = function(req,session) {
   return session[sessionid]==undefined;
 }
 
-// const storeComments = function(req,res) {
-//   if(isUserNotLoggedIn(req,session)){
-//     respondWithNotFound(res);
-//     return;
-//   }
-//   commentHandler.storeComment(req.body);
-//   res.statusCode=200;
-//   res.end();
-// }
-
 const getLogedUserName = function(session,sessionid) {
   return session[sessionid];
 }
@@ -106,7 +96,7 @@ const getLogedUserName = function(session,sessionid) {
 
 let app = WebApp.create();
 app.use(logger)
-app.usePostProcess(processFileRequest);
+app.usePostProcess(lib.processFileRequest);
 app.get('/',(req,res)=>{
   res.redirect('/index.html');
 })
