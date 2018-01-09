@@ -128,6 +128,24 @@ const storeComments = function(req,res) {
   res.statusCode=200;
   res.end();
 }
+
+const getLogedUserName = function(session,sessionid) {
+  return session[sessionid];
+}
+
+const processCommentLoadingReq = function(req,res) {
+  debugger;
+  let serverResponse = {};
+  if(isUserNotLoggedIn(req,session)){
+    serverResponse.notLogedIn = true;
+  }else{
+    serverResponse.username = getLogedUserName(session,req.cookies.sessionid);
+  }
+  serverResponse.comments= commentHandler.map(toHtmlTable).join('<br/>');
+  console.log(serverResponse);
+  res.write(JSON.stringify(serverResponse));
+  res.end();
+}
 /*============================================================================*/
 
 let app = WebApp.create();
@@ -136,16 +154,7 @@ app.usePostProcess(processFileRequest);
 app.get('/',(req,res)=>{
   res.redirect('/index.html');
 })
-app.get('/comments',(req,res)=>{
-  debugger;
-  let serverResponse = {};
-  if(isUserNotLoggedIn(req,session))
-    serverResponse.notLogedIn = true;
-  serverResponse.comments= commentHandler.map(toHtmlTable).join('<br/>');
-  console.log(serverResponse);
-  res.write(JSON.stringify(serverResponse));
-  res.end();
-})
+app.get('/comments',processCommentLoadingReq);
 app.post('/register',registerUser);
 app.post('/login',processLoginRequest);
 app.get('/logout',processLogoutRequest);

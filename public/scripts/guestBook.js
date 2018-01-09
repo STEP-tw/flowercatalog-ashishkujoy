@@ -47,12 +47,19 @@ const removeCommentPrivilege = function(){
   loginStatus.innerHTML = "Please login to comment.";
 }
 
+const showUserName = function(username) {
+  let loginStatus = document.getElementById('login_status');
+  loginStatus.innerHTML = `wellcome ${username}`;
+}
+
 const displayComments = function() {
   let serverResponse = JSON.parse(this.responseText);
   let comments = serverResponse.comments;
-  if(serverResponse.notLogedIn)
+  if(serverResponse.notLogedIn){
     removeCommentPrivilege();
-
+  }else{
+    showUserName(serverResponse.username);
+  }
   let commentsDiv = document.getElementById('freshComments');
   console.log(comments);
   commentsDiv.innerHTML = comments;
