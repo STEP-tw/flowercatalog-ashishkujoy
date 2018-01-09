@@ -25,9 +25,10 @@
       </form>
       <br />
       <div id='login_status'>
-        
+
       </div>
       <a href="/logout"><button>Logout</button></a>
+      <a href="/login.html"><button>Login</button></a>
       <br />
     </div>
     <table>

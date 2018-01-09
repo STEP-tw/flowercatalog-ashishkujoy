@@ -120,7 +120,10 @@ const processLogoutRequest = function(req,res) {
 }
 
 const storeComments = function(req,res) {
-
+  if(isUserNotLoggedIn(req,session)){
+    respondWithNotFound(res);
+    return;
+  }
   commentHandler.storeComment(req.body);
   res.statusCode=200;
   res.end();
@@ -145,7 +148,6 @@ app.get('/comments',(req,res)=>{
 })
 app.post('/register',registerUser);
 app.post('/login',processLoginRequest);
-//app.get('/guestBook',handleGuestBookReq);
 app.get('/logout',processLogoutRequest);
 app.post('/submitForm',storeComments);
 
