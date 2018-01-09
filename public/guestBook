@@ -15,29 +15,32 @@
     <hr />
     <br />
     <div id="formArea">
-      <!-- <form action="/submitForm" method="post"> -->
+      <form id = 'comment_form'>
           Name: <input type="text" id="name" required><br />
           Comment: <br />
           <textarea rows="10" cols="80" id="comment" required></textarea>
           <br />
-          <button id='commentButton'>SUBMIT</button>
-      <!-- </form> -->
+          <input type='button' id='commentButton' value='Submit'></input>
+
+      </form>
+      <br />
+      <div id='login_status'>
+        
+      </div>
+      <a href="/logout"><button>Logout</button></a>
+      <br />
     </div>
+    <table>
+
+    </table>
 
     <div id="commentArea">
       <br />
       <hr/>
-    <table border=1  >
-      <tr>
-        <th>Date</th>
-        <th>Name</th>
-        <th>Comment</th>
-      </tr>
       <div id='freshComments'>
 
       </div>
-    </table>
-    <a href="/logout"><button>Logout</button></a>
-  </div>
-</body>
+
+    </div>
+  </body>
 </html>

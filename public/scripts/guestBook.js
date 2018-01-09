@@ -1,35 +1,60 @@
 const getCommentDetails = function(){
   let name = document.getElementById('name').value;
   let comment = document.getElementById('comment').value;
+  document.getElementById('comment_form').reset();
   return {
     name:name,
     comment:comment
   }
 }
 
-const appendComment = function(commentDetail) {
+const prependComment = function(commentDetail) {
   let newComment = document.createElement('p');
   let commentInnerHTML = [
-    `name=${commentDetail.name}`,
-    `comment=${commentDetail.comment}`
+    `${new Date().toLocaleString()  }`,
+    `${commentDetail.name }`,
+    `${commentDetail.comment  }`
   ].join(' ')
   newComment.innerHTML=commentInnerHTML;
   let comments = document.getElementById('freshComments');
-  comments.appendChild(newComment);
+  comments.prepend(newComment);
+}
+
+const isIncomleteComment = function(commentDetail) {
+  return commentDetail.name==""|| commentDetail.comment=="";
 }
 
 const recordComment = function() {
   let commentDetail = getCommentDetails();
+  console.log(commentDetail);
+  if(isIncomleteComment(commentDetail)) return;
   let req = new XMLHttpRequest();
   req.open('POST','/submitForm');
-  req.onload=()=>{appendComment(commentDetail)};
+  req.onload=()=>{prependComment(commentDetail)};
   let commentData = `name=${commentDetail.name}&comment=${commentDetail.comment}`
   req.send(commentData);
 }
 
+const enableSubmitButton = function() {
+  let commentButton = document.getElementById('commentButton');
+  commentButton.onclick = recordComment;
+}
+
+const removeCommentPrivilege = function(){
+  let commentButton = document.getElementById('commentButton');
+  commentButton.onclick = null;
+  let loginStatus = document.getElementById('login_status');
+  loginStatus.innerHTML = "Please login to comment.";
+}
+
 const displayComments = function() {
-  let comments = this.responseText;
+  let serverResponse = JSON.parse(this.responseText);
+  let comments = serverResponse.comments;
+  if(serverResponse.notLogedIn)
+    removeCommentPrivilege();
+
   let commentsDiv = document.getElementById('freshComments');
+  console.log(comments);
   commentsDiv.innerHTML = comments;
 }
 

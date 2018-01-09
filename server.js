@@ -27,13 +27,13 @@ const logger = function(req,res) {
 const getContentType = function(filePath) {
   let fileExtension = filePath.slice(filePath.lastIndexOf('.'));
   let contentTypes = {
-      '.html':'text/html',
-      '.css':'text/css',
-      '.js':'text/javascript',
-      '.png':'image/png',
-      '.gif':'image/gif',
-      '.jpg':'image/jpg',
-      '.pdf':'application/pdf'
+    '.html':'text/html',
+    '.css':'text/css',
+    '.js':'text/javascript',
+    '.png':'image/png',
+    '.gif':'image/gif',
+    '.jpg':'image/jpg',
+    '.pdf':'application/pdf'
   }
   return contentTypes[fileExtension];
 }
@@ -66,11 +66,11 @@ const tableData = function(data) {
   return `<td>${data}</td>`;
 }
 
-const toHtmlTable = function(object) {
-  let date = tableData(object.date);
-  let name = tableData(object.name);
-  let comment = tableData(object.comment);
-  return `<tr>${date} ${name} ${comment}</tr>`;
+const toHtmlTable = function(commentRecord) {
+  // let date = tableData(object.date);
+  // let name = tableData(object.name);
+  // let comment = tableData(object.comment);
+  return `<p>${commentRecord.date} ${commentRecord.name} ${commentRecord.comment}</p>`;
 }
 
 
@@ -101,12 +101,17 @@ const processLoginRequest = function(req,res) {
 }
 
 
-const handleGuestBookReq = function(req,res) {
-  let user = session[req.cookies.sessionid];
-  console.log(user);
-  if(!user) return res.redirect('/login.html');
-}
+// const handleGuestBookReq = function(req,res) {
+//   let user = session[req.cookies.sessionid];
+//   console.log(user);
+//   if(!user) return res.redirect('/login.html');
+// }
 
+const isUserNotLoggedIn = function(req,session) {
+  let sessionid = req.cookies.sessionid
+  console.log(session[sessionid]);
+  return session[sessionid]==undefined;
+}
 
 const processLogoutRequest = function(req,res) {
   let time = new Date().toUTCString();
@@ -115,6 +120,7 @@ const processLogoutRequest = function(req,res) {
 }
 
 const storeComments = function(req,res) {
+
   commentHandler.storeComment(req.body);
   res.statusCode=200;
   res.end();
@@ -128,13 +134,18 @@ app.get('/',(req,res)=>{
   res.redirect('/index.html');
 })
 app.get('/comments',(req,res)=>{
-  let comments = commentHandler.map(toHtmlTable).join('\n');
-  res.write(comments);
+  debugger;
+  let serverResponse = {};
+  if(isUserNotLoggedIn(req,session))
+    serverResponse.notLogedIn = true;
+  serverResponse.comments= commentHandler.map(toHtmlTable).join('<br/>');
+  console.log(serverResponse);
+  res.write(JSON.stringify(serverResponse));
   res.end();
 })
 app.post('/register',registerUser);
 app.post('/login',processLoginRequest);
-app.get('/guestBook',handleGuestBookReq);
+//app.get('/guestBook',handleGuestBookReq);
 app.get('/logout',processLogoutRequest);
 app.post('/submitForm',storeComments);
 
