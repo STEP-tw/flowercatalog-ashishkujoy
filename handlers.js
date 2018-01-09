@@ -61,3 +61,10 @@ const processLoginRequest = function(registeredUsers,session,req,res) {
   responseWithGuestBook(res);
 }
 exports.processLoginRequest = processLoginRequest
+
+const processLogoutRequest = function(req,res) {
+  let time = new Date().toUTCString();
+  res.setHeader('Set-Cookie',[`logInFailed=false; Expires=${time}`,`sessionid=0; Expires=${time}`]);
+  res.redirect('/login.html')
+}
+exports.processLogoutRequest = processLogoutRequest;
