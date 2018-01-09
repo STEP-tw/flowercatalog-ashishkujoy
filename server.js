@@ -3,7 +3,7 @@ const http = require('http');
 const WebApp = require('./webapp');
 const fs = require('fs');
 const CommentHandler = require('./serverUtility/commentHandler.js');
-const PORT = 5000;
+const PORT = process.env.PORT||5000;
 const lib = require('./handlers.js');
 
 let registeredUsers = ['joy','arvind'];
@@ -96,7 +96,7 @@ const getLogedUserName = function(session,sessionid) {
 
 let app = WebApp.create();
 app.use(logger)
-app.usePostProcess(lib.processFileRequest);
+app.usePostProcess(lib.processStaticFileRequest);
 app.get('/',(req,res)=>{
   res.redirect('/index.html');
 })

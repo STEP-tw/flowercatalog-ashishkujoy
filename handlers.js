@@ -107,7 +107,7 @@ const storeComments = function(commentHandler,session,req,res) {
 }
 exports.storeComments = storeComments;
 
-const processFileRequest = function(req,res) {
+const processStaticFileRequest = function(req,res) {
   if(res.finished) return;
   let filePath = './public'+req.url;
   let contentType = getContentType(filePath);
@@ -116,4 +116,4 @@ const processFileRequest = function(req,res) {
     deliverFile(file,contentType,res);
   })
 }
-exports.processFileRequest = processFileRequest;
+exports.processStaticFileRequest = processStaticFileRequest;
