@@ -2,6 +2,7 @@ const isUserNotLoggedIn = function(req,session) {
   let sessionid = req.cookies.sessionid
   return session[sessionid]==undefined;
 }
+exports.isUserNotLoggedIn=isUserNotLoggedIn;
 
 const getLogedUserName = function(session,sessionid) {
   return session[sessionid];
@@ -20,10 +21,12 @@ const respondLoginFailed = function(res) {
   res.write('login failed');
   res.end();
 }
+exports.respondLoginFailed=respondLoginFailed;
 
 const responseWithGuestBook = function(res) {
   res.redirect('/guestBook');
 }
+exports.responseWithGuestBook = responseWithGuestBook;
 
 const getContentType = function(filePath) {
   let fileExtension = filePath.slice(filePath.lastIndexOf('.'));
@@ -38,6 +41,7 @@ const getContentType = function(filePath) {
   }
   return contentTypes[fileExtension];
 }
+exports.getContentType = getContentType;
 
 const deliverFile = function(file,contentType,res) {
   res.setHeader('Content-Type',`${contentType}`);

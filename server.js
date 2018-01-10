@@ -23,77 +23,7 @@ const logger = function(req,res) {
   console.log(`${req.method}    ${req.url}`);
   req.fs.appendFile('./data/log.json',logs,()=>{});
 }
-
-const getContentType = function(filePath) {
-  let fileExtension = filePath.slice(filePath.lastIndexOf('.'));
-  let contentTypes = {
-    '.html':'text/html',
-    '.css':'text/css',
-    '.js':'text/javascript',
-    '.png':'image/png',
-    '.gif':'image/gif',
-    '.jpg':'image/jpg',
-    '.pdf':'application/pdf'
-  }
-  return contentTypes[fileExtension];
-}
-
-const deliverFile = function(file,contentType,res) {
-    res.setHeader('Content-Type',`${contentType}`);
-    res.statusCode=200;
-    res.write(file);
-    res.end();
-}
-
-const respondWithNotFound = function(res) {
-    res.statusCode = 404;
-    res.write('not found');
-    res.end();
-}
-
-// const processFileRequest = function(req,res) {
-//   if(res.finished) return;
-//   let filePath = './public'+req.url;
-//   let contentType = getContentType(filePath);
-//   req.fs.readFile(filePath,function(error,file){
-//     if(error) return respondWithNotFound(res);
-//     deliverFile(file,contentType,res);
-//   })
-// }
-
-const tableData = function(data) {
-  return `<td>${data}</td>`;
-}
-
-const toHtmlTable = function(commentRecord) {
-  return `<p>${commentRecord.date} ${commentRecord.name} ${commentRecord.comment}</p>`;
-}
-
-const respondLoginFailed = function(res) {
-  res.setHeader('Set-Cookie','logInFailed=true');
-  res.write('login failed');
-  res.end();
-}
-
-const responseWithGuestBook = function(res) {
-  res.redirect('/guestBook');
-}
-
-const isUserAlreadyLogedIn = function(req) {
-  return req.sessionid != undefined;
-}
-
-const isUserNotLoggedIn = function(req,session) {
-  let sessionid = req.cookies.sessionid
-  return session[sessionid]==undefined;
-}
-
-const getLogedUserName = function(session,sessionid) {
-  return session[sessionid];
-}
-
 /*============================================================================*/
-
 let app = WebApp.create();
 app.use(logger)
 app.usePostProcess(lib.processStaticFileRequest);
