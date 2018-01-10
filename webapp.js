@@ -1,14 +1,12 @@
 const toKeyValue = kv=>{
-    let parts = kv.split('=');
-    return {key:parts[0].trim(),value:parts[1].trim()};
+  let parts = kv.split('=');
+  return {key:parts[0].trim(),value:parts[1].trim()};
 };
 
 const accumulate = (o,kv)=> {
   o[kv.key] = kv.value;
   return o;
 };
-
-
 
 const parseBody = function(text) {
   try{

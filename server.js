@@ -12,7 +12,7 @@ let commentHandler = new CommentHandler('./data/comments.json');
 commentHandler.loadComments();
 
 /*============================================================================*/
-const logger = function(req,res) {
+const logger = function(fs,req,res) {
   let logs = ['--------------------------------------------------------------',
     `${timeStamp()}`,
     `${req.method}`,
@@ -21,12 +21,16 @@ const logger = function(req,res) {
     ''
   ].join('\n');
   console.log(`${req.method}    ${req.url}`);
-  req.fs.appendFile('./data/log.json',logs,()=>{});
+  fs.appendFile('./data/log.json',logs,()=>{});
 }
 /*============================================================================*/
 let app = WebApp.create();
-app.use(logger)
-app.usePostProcess(lib.processStaticFileRequest);
+app.use((req,res)=>{
+  logger(fs,req,res);
+})
+app.usePostProcess((req,res)=>{
+  lib.processStaticFileRequest(fs,req,res);
+});
 app.get('/',(req,res)=>{
   res.redirect('/index.html');
 })
