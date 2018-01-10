@@ -4,7 +4,7 @@ const WebApp = require('./webapp');
 const fs = require('fs');
 const CommentHandler = require('./serverUtility/commentHandler.js');
 const PORT = process.env.PORT||5000;
-const lib = require('./handlers.js');
+const lib = require('./lib/handlers.js');
 
 let registeredUsers = ['joy','arvind'];
 let session = {};
